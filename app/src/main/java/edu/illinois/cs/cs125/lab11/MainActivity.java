@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,10 +21,14 @@ import org.json.JSONObject;
  * Main screen for our API testing app.
  */
 public final class MainActivity extends AppCompatActivity {
-    /** Default logging tag for messages from the main activity. */
+    /**
+     * Default logging tag for messages from the main activity.
+     */
     private static final String TAG = "Lab11:Main";
 
-    /** Request queue for our network requests. */
+    /**
+     * Request queue for our network requests.
+     */
     private static RequestQueue requestQueue;
 
     /**
@@ -61,19 +66,47 @@ public final class MainActivity extends AppCompatActivity {
      */
     void startAPICall() {
         try {
+            JSONObject jsonObject = new JSONObject(
+                    "{}"
+            );
+
+            /* 2.2 Question ans
+             * 1) GET 2) empty string
+             * 3) Log debug 4) Log error
+             * 5) use information in VolleyError object
+             */
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
-                    "",
-                    null,
+                    "https://api.iextrading.com/1.0/stock/AAPL/batch?types=quote",
+                    jsonObject,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(final JSONObject response) {
                             Log.d(TAG, response.toString());
+                            // set the jsonResponse text
+//                            MainActivity.this.runOnUiThread(
+//                                    new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            setContentView(R.layout.activity_main);
+//                                            TextView tv = (TextView)findViewById(R.id.jsonResult);
+//                                            tv.setText(response.toString());
+//                                        }
+//                                    }
+//                            );
+                            setContentView(R.layout.activity_main);
+                            TextView tv = (TextView)findViewById(R.id.jsonResult);
+                            tv.setText(response.toString());
+                            ProgressBar progressBar = findViewById(R.id.progressBar);
+                            progressBar.setVisibility(View.INVISIBLE);
                         }
-                    }, new Response.ErrorListener() {
+                    },
+                    new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(final VolleyError error) {
                             Log.w(TAG, error.toString());
+                            ProgressBar progressBar = findViewById(R.id.progressBar);
+                            progressBar.setVisibility(View.INVISIBLE);
                         }
                     });
             requestQueue.add(jsonObjectRequest);
