@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -88,7 +89,10 @@ public final class MainActivity extends AppCompatActivity {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(final VolleyError error) {
-                            Log.w(TAG, error.toString());
+                            String net = error.networkResponse.toString();
+                            Log.w(TAG, "Json Request failed: " + error.toString());
+                            Log.e(TAG, net + "\ndata " + new String(error.networkResponse.data));
+                            Toast.makeText(MainActivity.this, "Error " + error.toString(), Toast.LENGTH_LONG).show();
                             ProgressBar progressBar = findViewById(R.id.progressBar);
                             progressBar.setVisibility(View.INVISIBLE);
                         }
