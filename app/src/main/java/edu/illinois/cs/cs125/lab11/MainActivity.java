@@ -69,12 +69,7 @@ public final class MainActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(
                     "{}"
             );
-
-            /* 2.2 Question ans
-             * 1) GET 2) empty string
-             * 3) Log debug 4) Log error
-             * 5) use information in VolleyError object
-             */
+            // the actual request
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
                     "https://api.iextrading.com/1.0/stock/AAPL/batch?types=quote",
@@ -83,17 +78,6 @@ public final class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(final JSONObject response) {
                             Log.d(TAG, response.toString());
-                            // set the jsonResponse text
-//                            MainActivity.this.runOnUiThread(
-//                                    new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            setContentView(R.layout.activity_main);
-//                                            TextView tv = (TextView)findViewById(R.id.jsonResult);
-//                                            tv.setText(response.toString());
-//                                        }
-//                                    }
-//                            );
                             setContentView(R.layout.activity_main);
                             TextView tv = (TextView)findViewById(R.id.jsonResult);
                             tv.setText(response.toString());
@@ -109,6 +93,7 @@ public final class MainActivity extends AppCompatActivity {
                             progressBar.setVisibility(View.INVISIBLE);
                         }
                     });
+            // add the request to the submission queue(async submit)
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
             e.printStackTrace();
